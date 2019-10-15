@@ -5,8 +5,7 @@
     - name: Install EPEL repository
       package:
         name: epel-release
-        state: present
-      when: yum_epel_repository|bool
+        state: "{{ yum_epel_repository|bool|ternary('present', 'absent') }}"
 
     - name: Install package manager tools
       package:

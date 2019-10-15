@@ -1,11 +1,14 @@
 miscellaneous_dynamic_defaults:
+
   apt:
     package_manager_tools:
       - aptitude
       - apt-transport-https
+
   yum:
     package_manager_tools:
       - yum-utils
+
   centos:
     ntp_service: ntpd
     system_administration_tools:
@@ -19,10 +22,28 @@ miscellaneous_dynamic_defaults:
       - rsync
       - unzip
       - tar
+    yum_epel_repository: yes
+
+  redhat:
+    ntp_service: ntpd
+    system_administration_tools:
+      - htop
+      - iftop
+      - iotop
+      - ncdu
+      - screen
+      - tree
+    system_tools:
+      - rsync
+      - unzip
+      - tar
+    yum_epel_repository: no
+
   ubuntu-12.04:
     apt_sni_tools:
       - python-openssl
       - python-pyasn1
+
   ubuntu-17.10:
     system_administration_tools:
       - htop
@@ -32,6 +53,7 @@ miscellaneous_dynamic_defaults:
       - net-tools
       - screen
       - tree
+
   linux:
     ntp_service: ntp
     system_administration_tools:
@@ -47,11 +69,13 @@ miscellaneous_dynamic_defaults:
       - rsync
       - unzip
       - tar
+
   default:
     apt_sni_tools:
       - python-openssl
       - python-pyasn1
       - python-urllib3
+
 apt_distribution_repositories:
   - [core, main]
   - [core, restricted]
@@ -83,4 +107,3 @@ upgrade_packages_cache_valid_time: 3600
 upgrade_packages_async: "{{ (ansible_connection == 'local')|ternary(omit, 600) }}"
 upgrade_packages_poll: "{{ (ansible_connection == 'local')|ternary(omit, 5) }}"
 vm_swappiness: 1
-yum_epel_repository: yes  # Do nothing in distribution such as Ubuntu, "no" do not disable it.
