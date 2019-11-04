@@ -17,7 +17,7 @@
         name: '*'
         state: latest
         update_cache: yes
-      async: '{{ upgrade_packages_async }}'
+      async: '{{ omit if ansible_check_mode else upgrade_packages_async }}'
       poll: '{{ upgrade_packages_poll }}'
       when: upgrade_packages|bool
   become: yes
