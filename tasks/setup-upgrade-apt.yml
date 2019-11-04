@@ -47,7 +47,7 @@
             upgrade: full
             update_cache: yes
             cache_valid_time: '{{ upgrade_packages_cache_valid_time }}'
-          async: '{{ upgrade_packages_async }}'
+          async: '{{ omit if ansible_check_mode else upgrade_packages_async }}'
           poll: '{{ upgrade_packages_poll }}'
 
         - name: Cleanup the packages
