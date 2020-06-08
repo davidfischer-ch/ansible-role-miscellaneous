@@ -5,6 +5,9 @@ miscellaneous_dynamic_defaults:
       - aptitude
       - apt-transport-https
 
+  dnf:
+    package_manager_tools: []
+
   yum:
     package_manager_tools:
       - yum-utils
@@ -22,6 +25,7 @@ miscellaneous_dynamic_defaults:
       - rsync
       - unzip
       - tar
+    dnf_epel_repository: yes
     yum_epel_repository: yes
 
   redhat:
@@ -37,6 +41,7 @@ miscellaneous_dynamic_defaults:
       - rsync
       - unzip
       - tar
+    dnf_epel_repository: no
     yum_epel_repository: no
 
   ubuntu-12.04:
@@ -97,13 +102,19 @@ apt_distribution_repositories:
 apt_sources_files:
   - sources.{{ ansible_distribution|lower }}.list.j2
 extra_apt_repositories: []
+
 extra_packages: []
+
 locale: ''
+
 net_tcp_sack: no  # for security reasons (http://serverfault.com/questions/10955/when-to-turn-tcp-sack-off)
 net_wifi_powersafe: 2  # avoid slooooooooowwww network https://forums.linuxmint.com/viewtopic.php?t=242927
+
 timezone: ''
+
 upgrade_packages: yes
 upgrade_packages_cache_valid_time: 3600
 upgrade_packages_async: "{{ (ansible_connection == 'local')|ternary(omit, 600) }}"
 upgrade_packages_poll: "{{ (ansible_connection == 'local')|ternary(omit, 5) }}"
+
 vm_swappiness: 1
