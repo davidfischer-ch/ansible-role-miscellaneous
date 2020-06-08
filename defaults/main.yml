@@ -28,6 +28,11 @@ miscellaneous_dynamic_defaults:
     dnf_epel_repository: yes
     yum_epel_repository: yes
 
+  centos-8.*:
+    # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony-to-configure-ntp
+    ntp_package: chrony
+    ntp_service: chronyd
+
   redhat:
     ntp_service: ntpd
     system_administration_tools:
@@ -43,6 +48,11 @@ miscellaneous_dynamic_defaults:
       - tar
     dnf_epel_repository: no
     yum_epel_repository: no
+
+  redhat-8.*:
+    # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/using-chrony-to-configure-ntp
+    ntp_package: chrony
+    ntp_service: chronyd
 
   ubuntu-12.04:
     apt_sni_tools:
@@ -60,6 +70,7 @@ miscellaneous_dynamic_defaults:
       - tree
 
   linux:
+    ntp_package: ntp
     ntp_service: ntp
     system_administration_tools:
       - htop

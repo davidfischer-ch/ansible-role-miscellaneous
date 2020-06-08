@@ -73,7 +73,7 @@
 - block:
     - name: Install NTP
       package:
-        name: ntp
+        name: '{{ ntp_package }}'
         state: present
       tags: packages
 
