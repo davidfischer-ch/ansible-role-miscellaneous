@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.2
+
+### Fix and enhancements
+
+- Also install apt-utils on APT powered distributions
+
 ## v1.0.1
 
 ### Fix and enhancements
