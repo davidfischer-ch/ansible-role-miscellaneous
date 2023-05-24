@@ -114,6 +114,7 @@ apt_distribution_repositories:
 apt_sources_files:
   - sources.{{ ansible_distribution|lower }}.list.j2
 extra_apt_repositories: []
+extra_apt_packages: []
 
 extra_packages: []
 

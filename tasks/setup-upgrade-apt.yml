@@ -41,6 +41,12 @@
         state: present
       when: ansible_python_version is version('2.7.9', '<')
 
+    - name: Install extra Debian packages
+      apt:
+        deb: '{{ item }}'
+        state: present
+      loop: '{{ extra_apt_packages }}'
+
     - block:
         - name: Upgrade the packages
           apt:
