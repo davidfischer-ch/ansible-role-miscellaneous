@@ -1,66 +1,81 @@
 ---
 
 - block:
-    - name: Configure packages sources
-      template:
+    - name: Configure packages sources (old format)
+      ansible.builtin.template:
         src: '{{ item }}'
         dest: /etc/apt/sources.list
         mode: '664'
-      register: _apt_sources
+      register: _apt_old_sources
       with_first_found:
-        - files: '{{ apt_sources_files }}'
-          skip: "{{ ansible_distribution == 'Linux Mint' }}"
+        - files: '{{ apt_old_sources_files }}'
+          skip: false
+
+    - name: Configure packages sources (new format)
+      ansible.builtin.template:
+        src: '{{ item }}'
+        dest: /etc/apt/sources.list.d/{{ ansible_distribution|lower }}.sources
+        mode: '664'
+      register: _apt_new_sources
+      with_first_found:
+        - files: '{{ apt_new_sources_files }}'
+          skip: '{{ _apt_old_sources.size > 70 }}'
+          # Weak heuristic to detect that sources.list has actual data and not a "banner"
 
     - name: Install extra repositories
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: '{{ item }}'
         state: present
-        update_cache: yes
+        update_cache: true
       loop: '{{ extra_apt_repositories }}'
       register: _apt_extra_repositories
 
     - name: Refresh package manager cache
-      apt:
-        update_cache: yes
-      when: _apt_sources is change and not _apt_extra_repositories is change
+      ansible.builtin.apt:
+        update_cache: true
+      when: >
+        (_apt_old_sources is change or _apt_new_sources is change) and
+        not _apt_extra_repositories is change
 
     - name: Fix any previously running packages upgrade
-      command:
+      ansible.builtin.command:
         dpkg --configure -a
       changed_when: _upgrade_fix.stdout|default('')|length > 0
       register: _upgrade_fix
 
     - name: Install package manager tools
-      package:
+      ansible.builtin.package:
         name: '{{ package_manager_tools }}'
         state: present
 
     - name: Install SNI tools for Python<2.7.9
-      package:
+      ansible.builtin.package:
         name: '{{ apt_sni_tools }}'
         state: present
       when: ansible_python_version is version('2.7.9', '<')
 
     - name: Install extra Debian packages
-      apt:
+      ansible.builtin.apt:
         deb: '{{ item }}'
         state: present
       loop: '{{ extra_apt_packages }}'
 
     - block:
         - name: Upgrade the packages
-          apt:
+          ansible.builtin.apt:
             upgrade: full
-            update_cache: yes
+            update_cache: true
             cache_valid_time: '{{ upgrade_packages_cache_valid_time }}'
           async: '{{ omit if ansible_check_mode else upgrade_packages_async }}'
           poll: '{{ upgrade_packages_poll }}'
 
         - name: Cleanup the packages
-          shell: >
+          ansible.builtin.shell: >
             apt-get -y autoremove && apt-get -y autoclean
           changed_when: _upgrade_cleanup.stdout_lines|length > 7
           register: _upgrade_cleanup
       when: upgrade_packages|bool
-  become: yes
-  tags: [miscellaneous, packages, upgrade] # FIXME Remove when this is fixed https://github.com/ansible/ansible/issues/30882
+  become: true
+  tags: [miscellaneous, packages, upgrade]
+
+...

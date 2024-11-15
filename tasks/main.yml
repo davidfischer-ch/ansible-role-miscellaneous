@@ -4,59 +4,59 @@
 - dynamic_defaults:
     hostvars: '{{ hostvars[inventory_hostname] }}'
     defaults: '{{ miscellaneous_dynamic_defaults }}'
-    must_match: yes
+    must_match: true
   tags: [miscellaneous, always]
 
 - include_tasks: setup-upgrade-{{ ansible_pkg_mgr }}.yml
   tags: [miscellaneous, packages, upgrade]
 
 - name: Install extra packages
-  package:
+  ansible.builtin.package:
     name: '{{ extra_packages }}'
     state: present
-  become: yes
+  become: true
   tags: [miscellaneous, packages]
 
 - block:
     - name: Set swappiness
-      sysctl:
+      ansible.builtin.sysctl:
         name: vm.swappiness
         state: present
-        sysctl_set: yes
+        sysctl_set: true
         value: '{{ vm_swappiness|int }}'
 
     - name: Toggle TCP Selective Acknowledgment
-      sysctl:
+      ansible.builtin.sysctl:
         name: net.ipv4.tcp_sack
         state: present
-        sysctl_set: yes
+        sysctl_set: true
         value: '{{ net_tcp_sack|bool|ternary(1, 0) }}'
       changed_when: _tcp_sack is change
       failed_when: _tcp_sack is failure and 'No such file' not in _tcp_sack.msg
       register: _tcp_sack
-  become: yes
+  become: true
   tags: [miscellaneous, network, sysctl, config]
 
 - block:
     - name: Check Network Manager configuration directory exists
-      stat:
+      ansible.builtin.stat:
         path: /etc/NetworkManager/conf.d
       register: _network_manager_config
 
     - name: Remove default WiFi PowerSafe Configuration
-      file:
+      ansible.builtin.file:
         name: /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
         state: absent
       notify: restart network manager
       when: _network_manager_config.stat.exists
 
     - name: Configure WiFi PowerSafe Mode
-      template:
+      ansible.builtin.template:
         src: wifi.powersave.conf.j2
         dest: /etc/NetworkManager/conf.d/ansible-role-miscellaneous-wifi-powersafe.conf
       notify: restart network manager
       when: _network_manager_config.stat.exists
-  become: yes
+  become: true
   tags: [miscellaneous, network, config]
 
 - include_tasks: setup-locale-{{ ansible_pkg_mgr }}.yml
@@ -64,37 +64,39 @@
   when: locale|length > 0
 
 - name: Configure timezone
-  timezone:
+  ansible.builtin.timezone:
     name: '{{ timezone }}'
-  become: yes
+  become: true
   tags: [miscellaneous, timezone, config]
   when: timezone|length > 0
 
 - block:
     - name: Install NTP
-      package:
+      ansible.builtin.package:
         name: '{{ ntp_package }}'
         state: present
       tags: packages
 
     - name: Start NTP service
-      service:
+      ansible.builtin.service:
         name: '{{ ntp_service }}'
-        enabled: yes
+        enabled: true
         state: started
       tags: services
-  become: yes
+  become: true
   tags: [miscellaneous, ntp]
 
 - block:
     - name: Install usefull system tools
-      package:
+      ansible.builtin.package:
         name: '{{ system_tools }}'
         state: present
 
     - name: Install usefull system administration tools
-      package:
+      ansible.builtin.package:
         name: '{{ system_administration_tools }}'
         state: present
-  become: yes
+  become: true
   tags: [miscellaneous, packages]
+
+...
