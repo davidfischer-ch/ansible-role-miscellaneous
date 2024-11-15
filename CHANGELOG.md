@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.4 (2024-11-15)
+
+### Features
+
+* Ubuntu 24.04 compat
+
+### Fix and enhancements
+
+* Syntax
+
 ## v1.0.3 (2023-05-25)
 
 ### Features
