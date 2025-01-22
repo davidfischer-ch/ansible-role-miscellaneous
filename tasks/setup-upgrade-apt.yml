@@ -19,8 +19,6 @@
       register: _apt_new_sources
       with_first_found:
         - files: '{{ apt_new_sources_files }}'
-          skip: '{{ _apt_old_sources.size > 70 }}'
-          # Weak heuristic to detect that sources.list has actual data and not a "banner"
 
     - name: Install extra repositories
       ansible.builtin.apt_repository:
