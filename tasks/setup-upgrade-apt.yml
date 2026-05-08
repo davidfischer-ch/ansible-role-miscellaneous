@@ -12,13 +12,10 @@
           skip: false
 
     - name: Configure packages sources (new format)
-      ansible.builtin.template:
-        src: '{{ item }}'
-        dest: /etc/apt/sources.list.d/{{ ansible_distribution|lower }}.sources
-        mode: '664'
-      register: _apt_new_sources
-      with_first_found:
-        - files: '{{ apt_new_sources_files }}'
+      ansible.builtin.include_tasks: configure-apt-new-sources.yml
+      loop: '{{ apt_new_sources_files }}'
+      loop_control:
+        loop_var: _apt_source_entry
 
     - name: Install extra repositories
       ansible.builtin.apt_repository:
@@ -32,7 +29,7 @@
       ansible.builtin.apt:
         update_cache: true
       when: >
-        (_apt_old_sources is change or _apt_new_sources is change) and
+        (_apt_old_sources is change or _apt_new_sources_changed | default(false)) and
         not _apt_extra_repositories is change
 
     - name: Fix any previously running packages upgrade

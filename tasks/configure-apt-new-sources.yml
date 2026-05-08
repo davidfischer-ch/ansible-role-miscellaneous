@@ -1,0 +1,15 @@
+---
+- name: Configure packages source (new format)
+  ansible.builtin.template:
+    src: '{{ item }}'
+    dest: '{{ _apt_source_entry.dest }}'
+    mode: '664'
+  become: true
+  with_first_found:
+    - files: '{{ _apt_source_entry.srcs }}'
+      skip: false
+  register: _apt_new_source
+
+- name: Track packages source changes
+  ansible.builtin.set_fact:
+    _apt_new_sources_changed: '{{ _apt_new_sources_changed | default(false) or _apt_new_source.changed }}'
