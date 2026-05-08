@@ -72,6 +72,10 @@ miscellaneous_dynamic_defaults:
       - screen
       - tree
 
+  debian:
+    ntp_package: chrony
+    ntp_service: chronyd
+
   linux:
     ntp_package: ntp
     ntp_service: ntp
