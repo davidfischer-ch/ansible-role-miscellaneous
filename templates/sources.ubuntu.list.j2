@@ -1,3 +1,6 @@
+{% if ansible_distribution_version is version('24.04', '>=') %}
+# Ubuntu sources have moved to /etc/apt/sources.list.d/ubuntu.sources
+{% else %}
 # See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to newer versions of the distribution.
 
 {% for category, type in apt_distribution_repositories %}
@@ -11,3 +14,4 @@
 deb http://{{ url }} {{ ansible_distribution_release }}{{ apt_distribution_categories_suffix[category] }} {{ type }}
 deb-src http://{{ url }} {{ ansible_distribution_release }}{{ apt_distribution_categories_suffix[category] }} {{ type }}
 {% endfor %}
+{% endif %}

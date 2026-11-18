@@ -72,6 +72,16 @@ miscellaneous_dynamic_defaults:
       - screen
       - tree
 
+  # Ubuntu 26.10 and later: no ntp nor preload package, p7zip-full is a virtual package of 7zip
+  'ubuntu-(26\.10|2[7-9]\..+|[3-9][0-9]\..+)':
+    ntp_package: chrony
+    ntp_service: chrony
+    system_tools:
+      - 7zip
+      - rsync
+      - unzip
+      - tar
+
   debian:
     ntp_package: chrony
     ntp_service: chronyd
