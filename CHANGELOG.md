@@ -1,5 +1,31 @@
 # Changelog
 
+## v1.1.0 (2026-11-18)
+
+Diff: https://github.com/davidfischer-ch/ansible-role-miscellaneous/compare/v1.0.4...v1.1.0
+
+### Minor compatibility breaks
+
+APT sources:
+
+* Change `apt_new_sources_files` into a list of `{srcs, dest}` entries, each rendered to its own DEB822 file
+
+### Features
+
+APT sources:
+
+* Support Ubuntu 22.04 with a classic `sources.list`
+* Support Ubuntu releases after 24.04 with DEB822 sources and a stub `sources.list`
+* Add Raspberry Pi OS DEB822 sources for the Debian and Raspberry Pi archives
+
+Packages:
+
+* Install `chrony` as the NTP daemon on Debian
+* Install `chrony` as the NTP daemon on Ubuntu 26.10 and later
+* Adapt the system tools to Ubuntu 26.10 and later
+    * Install `7zip` instead of the virtual `p7zip-full`
+    * Drop `preload`, removed from the archive
+
 ## v1.0.4 (2024-11-15)
 
 ### Features
